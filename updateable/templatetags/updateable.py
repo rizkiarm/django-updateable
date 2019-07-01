@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 
 from hashlib import md5
-from django.template import Library, Node, TemplateSyntaxError
+from django.template import Library, Node, TemplateSyntaxError, Variable
 from .. import settings
 import logging
 
@@ -19,7 +19,7 @@ class UpdateableNode(Node):
         contents = u''.join(n.render(context) for n in self.nodelist)
         hash = md5(contents.encode()).hexdigest()
         rcontext = {
-            'id': self.element_id,
+            'id': Variable(self.element_id).resolve(context),
             'contents': contents,
             'hash': hash,
             'element': self.element,
